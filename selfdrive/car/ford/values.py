@@ -5,7 +5,7 @@ from typing import Dict, List, Union
 
 from cereal import car
 from selfdrive.car import dbc_dict
-from selfdrive.car.docs_definitions import CarInfo, Harness
+from selfdrive.car.docs_definitions import CarFootnote, CarInfo, Column, Harness
 from selfdrive.car.fw_query_definitions import FwQueryConfig, Request, StdQueries
 
 CarParams = car.CarParams
@@ -38,10 +38,15 @@ class CANBUS:
 
 class CAR:
   BRONCO_SPORT_MK1 = "FORD BRONCO SPORT 1ST GEN"
+  EDGE_MK2_5 = "FORD EDGE 2ND GEN FACELIFT"
   ESCAPE_MK4 = "FORD ESCAPE 4TH GEN"
+  EXPEDITION_MK4_5 = "FORD EXPEDITION 4TH GEN FACELIFT"
   EXPLORER_MK6 = "FORD EXPLORER 6TH GEN"
+  F_150_LIGHTNING_MK1 = "FORD F-150 LIGHTNING 1ST GEN"
+  F_150_MK14 = "FORD F-150 14TH GEN"
   FOCUS_MK4 = "FORD FOCUS 4TH GEN"
   MAVERICK_MK1 = "FORD MAVERICK 1ST GEN"
+  MUSTANG_MACH_E_MK1 = "FORD MUSTANG MACH-E 1ST GEN"
 
 
 class RADAR:
@@ -49,7 +54,19 @@ class RADAR:
   DELPHI_MRR = 'FORD_CADS'
 
 
+CANFD_CARS = {CAR.F_150_MK14, CAR.F_150_LIGHTNING_MK1, CAR.MUSTANG_MACH_E_MK1}
+
+
 DBC: Dict[str, Dict[str, str]] = defaultdict(lambda: dbc_dict("ford_lincoln_base_pt", None))
+
+
+class Footnote(Enum):
+  CANFD = CarFootnote(
+    'Requires a <a href="https://comma.ai/shop/products/panda" target="_black">red panda</a> and <em>additional</em> <a href="https://comma.ai/shop/products/harness-box" target="_blank">harness box</a>, along with the <a href="https://comma.ai/shop/products/three" target="_blank">comma three and Ford Q4 harness</a>.',
+    Column.MODEL)
+  FOCUS = CarFootnote(
+    "Refers only to the fourth generation Focus (C519) which is not available in the North American market.",
+    Column.MODEL)
 
 
 @dataclass
@@ -59,15 +76,27 @@ class FordCarInfo(CarInfo):
 
 
 CAR_INFO: Dict[str, Union[CarInfo, List[CarInfo]]] = {
-  CAR.BRONCO_SPORT_MK1: FordCarInfo("Ford Bronco Sport 2021"),
+  CAR.BRONCO_SPORT_MK1: FordCarInfo("Ford Bronco Sport 2021-22"),
+  CAR.EDGE_MK2_5: FordCarInfo("Ford Edge 2019-22"),
   CAR.ESCAPE_MK4: [
-    FordCarInfo("Ford Escape 2020-21"),
-    FordCarInfo("Ford Kuga 2020-21", "Driver Assistance Pack"),
+    FordCarInfo("Ford Escape 2020-22"),
+    FordCarInfo("Ford Kuga 2019-22", "Driver Assistance Pack"),
   ],
+  CAR.EXPEDITION_MK4_5: FordCarInfo("Ford Expedition 2022"),
   CAR.EXPLORER_MK6: FordCarInfo("Ford Explorer 2020-22"),
-  CAR.FOCUS_MK4: FordCarInfo("Ford Focus EU 2019", "Driver Assistance Pack"),
+  CAR.F_150_LIGHTNING_MK1: FordCarInfo("Ford F-150 Lightning 2022", "Co-Pilot360 Assist 2.0"),
+  CAR.F_150_MK14: FordCarInfo("Ford F-150 2021-22", "Co-Pilot360 Assist 2.0"),
+  CAR.FOCUS_MK4: FordCarInfo("Ford Focus EU 2019-22", "Driver Assistance Pack"),
   CAR.MAVERICK_MK1: FordCarInfo("Ford Maverick 2022", "Co-Pilot360 Assist"),
+  CAR.MUSTANG_MACH_E_MK1: FordCarInfo("Ford Mustang Mach-E 2021-22", "Co-Pilot360 Assist 2.0"),
 }
+
+for platform, car_info in CAR_INFO.items():
+  if platform in CANFD_CARS:
+    car_info = car_info if isinstance(car_info, list) else [car_info]
+    for info in car_info:
+      info.footnotes.append(Footnote.CANFD)
+      info.harness = Harness.ford_q4
 
 FW_QUERY_CONFIG = FwQueryConfig(
   requests=[

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from common.conversions import Conversions as CV
 from selfdrive.car import STD_CARGO_KG, get_safety_config
 from selfdrive.car.ford.values import CAR, CarParams, Ecu, GearShifter, TransmissionType
 from selfdrive.car.interfaces import CarInterfaceBase
@@ -11,8 +10,10 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "ford"
     ret.safetyConfigs = [get_safety_config(CarParams.SafetyModel.ford)]
 
-    # These cars are dashcam only until steering safety is implemented
-    ret.dashcamOnly = False
+    # These cars have been put into dashcam only due to both a lack of users and test coverage.
+    # These cars likely still work fine. Once a user confirms each car works and a test route is
+    # added to selfdrive/car/tests/routes.py, we can remove it from this list.
+    ret.dashcamOnly = candidate in {CAR.EDGE_MK2_5, CAR.EXPEDITION_MK4_5, CAR.F_150_LIGHTNING_MK1, CAR.F_150_MK14, CAR.MUSTANG_MACH_E_MK1}
 
     # curvature steering
     ret.steerControlType = CarParams.SteerControlType.curvature
@@ -27,10 +28,20 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 17.7
       ret.mass = 1625 + STD_CARGO_KG
 
+    elif candidate == CAR.EDGE_MK2_5:
+      ret.wheelbase = 2.85
+      ret.steerRatio = 15.0  # guess
+      ret.mass = 1900 + STD_CARGO_KG
+
     elif candidate == CAR.ESCAPE_MK4:
       ret.wheelbase = 2.71
       ret.steerRatio = 17.7
       ret.mass = 1750 + STD_CARGO_KG
+
+    elif candidate == CAR.EXPEDITION_MK4_5:
+      ret.wheelbase = 3.11
+      ret.steerRatio = 16.8  # Copied from Explorer
+      ret.mass = 2500 + STD_CARGO_KG
 
     elif candidate == CAR.EXPLORER_MK6:
       ret.wheelbase = 3.025
@@ -42,10 +53,26 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 13.8
       ret.mass = 1350 + STD_CARGO_KG
 
+    elif candidate == CAR.F_150_LIGHTNING_MK1:
+      ret.wheelbase = 3.696
+      ret.steerRatio = 18.0  # guess
+      ret.mass = 2750 + STD_CARGO_KG
+
+    elif candidate == CAR.F_150_MK14:
+      # depends on body style
+      ret.wheelbase = 3.5
+      ret.steerRatio = 18.0  # guess
+      ret.mass = 2100 + STD_CARGO_KG
+
     elif candidate == CAR.MAVERICK_MK1:
       ret.wheelbase = 3.076
       ret.steerRatio = 16.2
       ret.mass = 1650 + STD_CARGO_KG
+
+    elif candidate == CAR.MUSTANG_MACH_E_MK1:
+      ret.wheelbase = 2.985
+      ret.steerRatio = 17.0  # guess
+      ret.mass = 2100 + STD_CARGO_KG
 
     else:
       raise ValueError(f"Unsupported car: {candidate}")
@@ -56,7 +83,8 @@ class CarInterface(CarInterfaceBase):
       ret.transmissionType = TransmissionType.automatic
     else:
       ret.transmissionType = TransmissionType.manual
-      ret.minEnableSpeed = 20.0 * CV.MPH_TO_MS
+      # TODO: add footnote
+      #ret.minEnableSpeed = 20.0 * CV.MPH_TO_MS
 
     # BSM: Side_Detect_L_Stat, Side_Detect_R_Stat
     # TODO: detect bsm in car_fw?
