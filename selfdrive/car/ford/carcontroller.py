@@ -2,7 +2,7 @@ from cereal import car
 from common.numpy_fast import clip
 from opendbc.can.packer import CANPacker
 from selfdrive.car.ford.fordcan import FordCAN
-from selfdrive.car.ford.values import CANBUS, CarControllerParams
+from selfdrive.car.ford.values import CANBUS, CANFD_CARS, CarControllerParams
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -70,8 +70,16 @@ class CarController:
 
       mode = 1 if CC.latActive else 0
       can_sends.append(self.ford_can.create_lka_msg(0., 0.))
-      can_sends.append(self.ford_can.create_lat_ctl_msg(mode, ramp_type, precision,
-                                                        0., 0., apply_curvature, 0.))
+
+      if self.CP.carFingerprint in CANFD_CARS:
+        mode = 2 if CC.latActive else 0
+        can_sends.append(self.ford_can.create_lat_ctl2_msg(mode, ramp_type, precision,
+                                                           0., 0., apply_curvature, 0.,
+                                                           self.frame // CarControllerParams.LKAS_STEER_STEP))
+      else:
+        mode = 1 if CC.latActive else 0
+        can_sends.append(self.ford_can.create_lat_ctl_msg(mode, ramp_type, precision,
+                                                          0., 0., apply_curvature, 0.))
 
       self.apply_curvature_last = apply_curvature
 
