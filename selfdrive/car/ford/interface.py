@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from panda import Panda
+# from panda import Panda
 from selfdrive.car import STD_CARGO_KG, get_safety_config
 from selfdrive.car.ford.values import CANFD_CARS, CAR, CarParams, Ecu, GearShifter, TransmissionType
 from selfdrive.car.interfaces import CarInterfaceBase
@@ -10,8 +10,9 @@ class CarInterface(CarInterfaceBase):
   def _get_params(ret, candidate, fingerprint, car_fw, experimental_long):
     ret.carName = "ford"
     if candidate in CANFD_CARS:
-      ret.safetyConfigs = [get_safety_config(CarParams.SafetyModel.noOutput),
-                           get_safety_config(CarParams.SafetyModel.ford, Panda.FLAG_FORD_CANFD)]
+      pass
+      # ret.safetyConfigs = [get_safety_config(CarParams.SafetyModel.noOutput),
+      #                      get_safety_config(CarParams.SafetyModel.ford, Panda.FLAG_FORD_CANFD)]
     else:
       ret.safetyConfigs = [get_safety_config(CarParams.SafetyModel.ford)]
 
