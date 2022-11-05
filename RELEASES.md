@@ -1,9 +1,14 @@
 Version 0.9.1 (2022-12-XX)
 ========================
+* Ford: new curvature steering control!
+  * Please provide feedback in Discord #ford channel
 * Adjust alert volume using ambient noise level
 * Removed driver monitoring timer resetting on interaction if face detected and distracted
-* Kia Sorento Plug-in Hybrid 2022 support thanks to sunnyhaibin!
-* Chevrolet Bolt EV 2022-23 support thanks to JasonJShuler!
+* Add support for Bronco Sport 2021-22
+* Add support for Escape 2020-22
+* Add support for Explorer 2020-22
+* Add support for Focus Mk4 2019-22
+* Add support for Maverick 2022
 
 Version 0.9.0 (2022-11-21)
 ========================
