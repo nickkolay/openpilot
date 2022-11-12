@@ -223,8 +223,10 @@ FW_VERSIONS = {
     ],
     (Ecu.engine, 0x7E0, None): [
       b'ML3A-14C204-MXG\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'NL3A-14C204-CLC\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     (Ecu.shiftByWire, 0x732, None): [
+      b'ML3P-3G596-BA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
   },
   CAR.FOCUS_MK4: {
