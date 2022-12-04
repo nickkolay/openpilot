@@ -2,6 +2,7 @@ Version 0.9.1 (2022-12-XX)
 ========================
 * Ford: new curvature steering control!
   * Please provide feedback in Discord #ford channel
+* Increased allowed calibration pitch range
 * Adjust alert volume using ambient noise level
 * Removed driver monitoring timer resetting on interaction if face detected and distracted
 * Add support for Bronco Sport 2021-22
